@@ -1,0 +1,14 @@
+{
+  "tests": [
+    {
+      "name": "lab_test",
+      "setup": "sudo -H pip3 install pytest sqlalchemy pandas numpy psycopg2-binary scipy ",
+      "run": "pytest",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": null
+    }
+  ]
+}
