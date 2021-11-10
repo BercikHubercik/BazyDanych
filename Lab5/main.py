@@ -30,8 +30,8 @@ def film_in_category(category:Union[int,str])->pd.DataFrame:
     if isinstance(category, int):
         return pd.read_sql("""SELECT
                                 title,
-                                language.name,
-                                category.name
+                                language.name as languge,
+                                category.name as category
                             FROM
                                 film
                             INNER JOIN language ON language.language_id = film.language_id
@@ -46,8 +46,8 @@ def film_in_category(category:Union[int,str])->pd.DataFrame:
     elif isinstance(category, str):
         return pd.read_sql("""SELECT
                                 title,
-                                language.name,
-                                category.name
+                                language.name as languge,
+                                category.name as category
                             FROM
                                 film
                             INNER JOIN language ON language.language_id = film.language_id
@@ -83,8 +83,8 @@ def film_in_category_case_insensitive(category:Union[int,str])->pd.DataFrame:
     if isinstance(category, int):
         return pd.read_sql("""SELECT
                                  title,
-                                 language.name,
-                                 category.name
+                                 language.name as languge,
+                                 category.name as category
                              FROM
                                  film
                              INNER JOIN language ON language.language_id = film.language_id
@@ -99,8 +99,8 @@ def film_in_category_case_insensitive(category:Union[int,str])->pd.DataFrame:
     elif isinstance(category, str):
         return pd.read_sql("""SELECT
                                  title,
-                                 language.name,
-                                 category.name
+                                 language.name as languge,
+                                 category.name as category
                              FROM
                                  film
                              INNER JOIN language ON language.language_id = film.language_id
@@ -166,13 +166,16 @@ def film_title_case_insensitive(words:list) :
     pd.DataFrame: DataFrame zawierający wyniki zapytania
     '''
     if isinstance(words, list):
-        words_string = '%(' + '|'.join(words) + ')%'
-        return pd.read_sql("""SELECT
+        words_string = '|'.join(words)
+
+        return pd.read_sql(f"""SELECT
                                     title
                                 FROM
                                     film
                                 WHERE
-                                    title SIMILAR TO '{}'
-                                """.format(words_string), con=connection)
+                                    title ~* '(?:^| )({words_string})""" + """{1,}(?:$| )'
+                                """, con=connection)
     else:
         return None
+words = ['draCula', 'crystal', 'Spirit', 'Encino']
+print(film_title_case_insensitive(words))
